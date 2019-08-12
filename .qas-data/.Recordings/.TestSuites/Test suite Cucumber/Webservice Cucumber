@@ -1,0 +1,91 @@
+{
+    "steps": [
+        {
+            "command": "Request",
+            "element": "",
+            "eArray": [],
+            "input": "GET.struts2.rest.showcase.2.5.18.orders.json",
+            "status": "Passed",
+            "elementKey": "GET.struts2.rest.showcase.2.5.18.orders.json",
+            "elementDesc": "",
+            "indexColumn": "",
+            "tcId": 40,
+            "tsId": 25,
+            "duration": 1185000000,
+            "errMessage": "",
+            "isRowExpanded": false
+        },
+        {
+            "command": "Request",
+            "element": "",
+            "input": "PUT.struts2.rest.showcase.2.5.18.orders.3.json",
+            "status": "Passed",
+            "elementKey": "PUT.struts2.rest.showcase.2.5.18.orders.3.json",
+            "elementDesc": "",
+            "indexColumn": "",
+            "tcId": 40,
+            "tsId": 25,
+            "duration": 826000000,
+            "errMessage": "",
+            "isRowExpanded": false
+        },
+        {
+            "command": "Response Should Have Status Code",
+            "element": "",
+            "eArray": [],
+            "input": "200",
+            "status": "Passed",
+            "elementKey": "",
+            "elementDesc": "",
+            "indexColumn": "",
+            "tcId": 40,
+            "tsId": 25,
+            "duration": 503000000,
+            "errMessage": "",
+            "isRowExpanded": false
+        },
+        {
+            "command": "Response Should Have Header With Value",
+            "element": "content-length",
+            "eArray": [
+                [
+                    "content-length",
+                    "jsonpath"
+                ]
+            ],
+            "input": "4",
+            "status": "Passed",
+            "elementKey": "",
+            "elementDesc": "",
+            "indexColumn": "",
+            "tcId": 40,
+            "tsId": 25,
+            "duration": 509000000,
+            "errMessage": "",
+            "isRowExpanded": false
+        },
+        {
+            "command": "Request",
+            "element": "",
+            "eArray": [],
+            "input": "PUT.struts2.rest.showcase.2.5.18.orders.3.json_1",
+            "status": "Passed",
+            "elementKey": "PUT.struts2.rest.showcase.2.5.18.orders.3.json_1",
+            "elementDesc": "",
+            "indexColumn": "",
+            "tcId": 40,
+            "tsId": 25,
+            "duration": 1070000000,
+            "errMessage": "",
+            "isRowExpanded": false
+        }
+    ],
+    "type": "webservice",
+    "capabilities": {
+        "type": "webservice",
+        "apiUrl": "https://qas.qmetry.com",
+        "baseUrl": "https://qas.qmetry.com/bank"
+    },
+    "testDataExample": [],
+    "executionStatus": "Passed"
+}
