@@ -4,6 +4,7 @@ import static com.qmetry.qaf.automation.ui.webdriver.ElementFactory.$;
 
 import com.qmetry.qaf.automation.core.ConfigurationManager;
 import com.qmetry.qaf.automation.step.QAFTestStep;
+import com.qmetry.qaf.automation.step.CommonStep;
 import com.qmetry.qaf.automation.ui.WebDriverTestBase;
 import com.qmetry.qaf.automation.ui.webdriver.QAFWebElement;
 import org.openqa.selenium.WebElement;
@@ -19,6 +20,12 @@ import com.qmetry.qaf.automation.ui.webdriver.QAFExtendedWebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.JavascriptExecutor;
 import com.qmetry.qaf.automation.util.Validator;
+import org.openqa.selenium.Alert;
+import java.util.NoSuchElementException;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 // define common steps among all the platforms.
 // You can create sub packages to organize the steps within different modules
@@ -105,7 +112,7 @@ public class StepsLibrary {
 	public static void selectIn(String value,String loc) {
 		WebElement sel = new WebDriverTestBase().getDriver().findElement(loc);
 		Select selectDropDown = new Select(sel);
-		selectDropDown.selectByValue(value.split("=")[1]);
+		selectDropDown.selectByVisibleText(value.contains("=")?value.split("=")[1]:value);
 	}
 
 	@QAFTestStep(description = "type Enter {loc}")
@@ -191,10 +198,105 @@ public class StepsLibrary {
 	public static void verifyTitle(String input) {
 		Validator.verifyTrue(new WebDriverTestBase().getDriver().getTitle().equalsIgnoreCase(input),"Actual Title: \""+ new WebDriverTestBase().getDriver().getTitle() +"\" does not match with Expected: \"" +input+"\"" , "Actual Title: \""+ new WebDriverTestBase().getDriver().getTitle()+"\" matches with Expected: \"" +input+"\"");
 	}
-	
+
 	@QAFTestStep(description = "assertTitle {0}")
 	public static void assertTitle(String input) {
 		Validator.assertTrue(new WebDriverTestBase().getDriver().getTitle().equalsIgnoreCase(input),"Actual Title: \""+ new WebDriverTestBase().getDriver().getTitle() +"\" does not match with Expected: \"" +input+"\"" , "Actual Title: \""+ new WebDriverTestBase().getDriver().getTitle()+"\" matches with Expected: \"" +input+"\"");
 	}
 
+	@QAFTestStep(description = "Execute Java Script with data {0}")
+	public static void executeJavaScript(String dataScript) {
+			new WebDriverTestBase().getDriver().executeScript(dataScript);;
+	}
+
+	@QAFTestStep(description = "Execute Async Java Script with data {0}")
+	public static void executeAsyncJavaScript(String dataScript) {
+			new WebDriverTestBase().getDriver().executeAsyncScript(dataScript);;
+	}
+
+	@QAFTestStep(description = "acceptAlert")
+	public static void acceptAlert() {
+		if (checkAlert(0)) {
+			new WebDriverTestBase().getDriver().switchTo().alert().accept();
+		}
+	}
+
+	@QAFTestStep(description = "dismissAlert")
+	public static void dismissAlert() {
+		if (checkAlert(0)) {
+			new WebDriverTestBase().getDriver().switchTo().alert().dismiss();
+		}
+	}
+
+	@QAFTestStep(description = "getAlertText")
+	public static String getAlertText() {
+		if (checkAlert(0)) {
+		Alert alert= new WebDriverTestBase().getDriver().switchTo().alert();
+		return alert.getText();
+		}else{
+			return "";
+		}
+	}
+
+	@QAFTestStep(description = "setAlertText {0}")
+	public static void setAlertText(String input) {
+		if (checkAlert(0)) {
+			new WebDriverTestBase().getDriver().switchTo().alert().sendKeys(input);
+		}
+	}
+	@QAFTestStep(description = "verifyAlertPresent {0} millisec")
+	public static void verifyAlertPresent(String timeout) {
+		if (!checkAlert(Long.valueOf(timeout))){
+			Validator.verifyFalse(true, "Alert is not present.", "Alert is present.");
+		}
+	}
+	@QAFTestStep(description = "verifyAlertNotPresent {0} millisec")
+	public static void verifyAlertNotPresent(String timeout) {
+		if (checkAlert(Long.valueOf(timeout))){
+			Validator.verifyFalse(true, "Alert is present.", "Alert is not present.");
+		}
+	}
+
+	@QAFTestStep(description = "waitForAlert {0} millisec")
+	public static void waitForAlert(String timeout) {
+		try{
+		WebDriverWait wait = new WebDriverWait(new WebDriverTestBase().getDriver(), Long.valueOf(timeout));
+		wait.until(ExpectedConditions.alertIsPresent());
+		}catch(Exception e){
+			System.out.println("Exception Occured during waitforAlert : "+e);
+		}
+	}
+
+	@QAFTestStep(description = "store value from {0} into {1}")
+	public static void storeValueIntoVariable(String loc , String varName) {
+		CommonStep.store($(loc).getAttribute("value"), varName);
+	}
+
+	@QAFTestStep(description = "store text from {0} into {1}")
+	public static void storeTextIntoVariable(String loc , String varName) {
+		CommonStep.store(CommonStep.getText(loc), varName);
+	}
+
+	@QAFTestStep(description = "store title into {0}")
+	public static void storeTitleIntoVariable(String varName){
+			CommonStep.store(new WebDriverTestBase().getDriver().getTitle(), varName);
+	}
+
+	public static boolean checkAlert(long timeout) {
+		boolean returnvalue = false;
+		WebDriverWait wait = new WebDriverWait(new WebDriverTestBase().getDriver(), timeout);
+		try {
+			wait.until(ExpectedConditions.alertIsPresent());
+			returnvalue = true;
+		} catch (NoSuchElementException e) {
+			returnvalue = false;
+		} catch (TimeoutException te) {
+			returnvalue = false;
+		} catch(NoAlertPresentException ex){
+			returnvalue = false;
+		}catch (Exception ex) {
+			returnvalue = false;
+		}
+		return returnvalue;
+	}
 }
