@@ -258,7 +258,7 @@
             }
         }
     },
-    "testData": "resources/web/users.csv",
+    "testData": "resources/testdata/users.csv",
     "testDataExample": [],
     "isTCValid": true,
     "executionStatus": "NotRun"
